@@ -9,6 +9,7 @@ setup(
     name='wh',
     version=__VERSION__,
     description='Record elapsed time and number of calls of a function',
+    license='MIT',
     author='AnqurVanillapy',
     author_email='anqurvanillapy@gmail.com',
     url='https://github.com/anqurvanillapy/wh',
