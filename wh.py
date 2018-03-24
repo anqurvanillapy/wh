@@ -27,6 +27,7 @@ def trek(stream=sys.stdout):
                 )
             )
             stream.flush()
+            wrap.ncall = wrap.ms = 0
 
         wrap.__name__ = func.__name__
         wrap.ncall = wrap.ms = 0

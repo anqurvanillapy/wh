@@ -4,7 +4,7 @@
 
 from distutils.core import setup
 
-__VERSION__ = '1.0.0'
+__VERSION__ = '1.0.1'
 setup(
     name='wh',
     version=__VERSION__,
