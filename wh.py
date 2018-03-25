@@ -10,7 +10,7 @@ from functools import total_ordering
 class _WhContextManager:
 
     def __init__(self, func, stream):
-        self._args = self._kwds = self._val = None
+        self._args = self._kwds = self._ret = None
         self._func = func
         self._stream = stream
         self._started = self.ncall = self.elapsed = 0
@@ -27,9 +27,9 @@ class _WhContextManager:
 
     def _after_call(self, *args, **kwds):
         self._record_start()
-        self._val = self._func(*args, **kwds)
+        self._ret = self._func(*args, **kwds)
         self._record_end()
-        return self._val
+        return self._ret
 
     def _record_start(self):
         self.ncall += 1
@@ -40,9 +40,9 @@ class _WhContextManager:
 
     def __enter__(self):
         self._record_start()
-        self._val = self._func(* self._args, ** self._kwds)
+        self._ret = self._func(* self._args, ** self._kwds)
         self._record_end()
-        return self._val
+        return self._ret
 
     def reset(self):
         """Reset for another context"""
@@ -63,14 +63,14 @@ class _WhContextManager:
         self.done()
 
     def __eq__(self, other):
-        if not self._val:
+        if not self._ret:
             self.__call__(* self._args, ** self._kwds)
-        return self._val == other
+        return self._ret == other
 
     def __lt__(self, other):
-        if not self._val:
+        if not self._ret:
             self.__call__(* self._args, ** self._kwds)
-        return self._val < other
+        return self._ret < other
 
 
 def trek(stream=sys.stdout):
