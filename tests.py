@@ -3,9 +3,9 @@ import io
 import wh
 
 
-class TestWormhole(unittest.TestCase):
+class TestWh(unittest.TestCase):
 
-    def test_trek(self):
+    def test_basic(self):
 
         @wh.trek()
         def fib(n):
@@ -13,7 +13,7 @@ class TestWormhole(unittest.TestCase):
 
         self.assertEqual(fib(10), 55)
         self.assertEqual(fib.ncall, 109)
-        self.assertGreater(fib.ms, 0)
+        self.assertGreater(fib.elapsed, 0)
 
     def test_write_to_stream(self):
         sio = io.StringIO()
@@ -24,5 +24,24 @@ class TestWormhole(unittest.TestCase):
 
         self.assertEqual(fac(4), 24)
         fac.done()
-        sio.seek(0)
-        self.assertEqual(sio.read(17), '[wh] fac: 4 calls')
+        self.assertEqual(sio.getvalue()[:17], '[wh] fac: 4 calls')
+
+    def test_done(self):
+
+        @wh.trek()
+        def foo():
+            return
+
+        foo()
+        foo.done()
+        self.assertEqual(foo.ncall, 0)
+        self.assertEqual(foo.elapsed, 0)
+
+    def test_context(self):
+
+        @wh.trek()
+        def foo():
+            return 42
+
+        with foo() as ret:
+            self.assertEqual(ret, 42)

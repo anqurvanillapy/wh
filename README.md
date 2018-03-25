@@ -4,10 +4,26 @@
 for recording the elapsed time and the number of calls for a certain Python
 function.
 
+**Notes**: It brings *slight overheads* including additional function calls
+(e.g. incrementing time) and branches (e.g. for tweaking the context).  Don't
+mess with tiny little stubs or highly precise benchmarks with this module.
+
 ## Usage
 
+### Methods
+
 * `wh.trek(stream=sys.stdout)`: Decorator for recording the call info, which is
-written in `sys.stdout` by default
+logged in `sys.stdout` by default.  Returns an instance of `_WhContextManager`
+* `_WhContextManager.reset()`: Manually resets states for next contexts
+* `_WhContextManager.done()`: Manually finishes the task and starts logging and
+`self.reset()`-ting
+
+### Attributes
+
+* `_WhContextManager.ncall`: Number of calls
+* `_WhContextManager.elapsed`: Elapsed time
+
+### Example
 
 ```py
 import wh
@@ -19,13 +35,20 @@ def fib(n):
     return fib(n - 2) + fib(n - 1) if n > 2 else 1
 
 
+# No benchmark output.
 assert fib(10) == 55
-fib.done()  # call info printed to sys.stdout
+fib.reset()  # reset for a next call
+
+
+# Output triggered by `with`.
+with fib(10) as ret:
+    assert ret == 55
 # Output:
 #     [wh] fib: 109 calls, 0.157958984375(ms) elapsed
 #
 
 
+# File I/O.
 f = open('foo.txt', 'w')
 
 
@@ -36,7 +59,7 @@ def fac(n):
 
 
 assert fac(4) == 24
-fac.done()  # call info logged in foo.txt
+fac.done() # manually writes to file
 f.close()  # context should be managed manually
 ```
 
