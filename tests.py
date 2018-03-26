@@ -45,3 +45,23 @@ class TestWh(unittest.TestCase):
 
         with foo() as ret:
             self.assertEqual(ret, 42)
+
+    def test_repr(self):
+
+        @wh.trek()
+        def foo():
+            return 42
+
+        self.assertEqual(repr(foo()), '42')
+        foo.reset()
+        self.assertEqual(str(foo()), '42')
+
+    def test_retval(self):
+
+        @wh.trek()
+        def foo():
+            return 42
+
+        with self.assertRaises(TypeError):
+            assert foo.retval == 42
+        assert foo().retval == 42

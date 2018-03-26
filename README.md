@@ -22,6 +22,9 @@ logged in `sys.stdout` by default.  Returns an instance of `_WhContextManager`
 
 * `_WhContextManager.ncall`: Number of calls
 * `_WhContextManager.elapsed`: Elapsed time
+* `_WhContextManager.retval`: Return value of the function.  If it is not even
+called before, `TypeError` would be raised (e.g. `foo().retval` instead of
+`foo.retval` right after `foo`'s declaration)
 
 ### Example
 

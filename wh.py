@@ -62,15 +62,33 @@ class _WhContextManager:
     def __exit__(self, *_):
         self.done()
 
+    def _check_call(self):
+        if not self._called:
+            raise TypeError('Function should be called at least once')
+
+        self.__enter__()
+
+    @property
+    def retval(self):
+        """Return value of the call"""
+        self._check_call()
+        return self._ret
+
     def __eq__(self, other):
-        if not self._ret:
-            self.__call__(* self._args, ** self._kwds)
+        self._check_call()
         return self._ret == other
 
     def __lt__(self, other):
-        if not self._ret:
-            self.__call__(* self._args, ** self._kwds)
+        self._check_call()
         return self._ret < other
+
+    def __repr__(self):
+        self._check_call()
+        return repr(self._ret)
+
+    def __str__(self):
+        self._check_call()
+        return str(self._ret)
 
 
 def trek(stream=sys.stdout):
