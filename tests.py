@@ -43,6 +43,9 @@ class TestWh(unittest.TestCase):
         def foo():
             return 42
 
+        with self.assertRaises(TypeError):
+            with foo as ret:
+                self.assertEqual(ret, 42)
         with foo() as ret:
             self.assertEqual(ret, 42)
 
